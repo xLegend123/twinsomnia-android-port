@@ -1159,7 +1159,7 @@ class FunkinLua {
 			#if VIDEOS_ALLOWED
 			if(OpenFlAssets.exists("assets/videos/" + videoFile + ".html")) 
 			{
-				lePlayState.startVideo(videoFile);
+				PlayState.instance.startVideo(videoFile);
 			} 
 			else 
 			{
@@ -1168,11 +1168,11 @@ class FunkinLua {
 			#else
 			if(lePlayState.endingSong) 
 			{
-				lePlayState.endSong();
+				PlayState.instance.endSong();
 			} 
 			else 
 			{
-				lePlayState.startCountdown();
+				PlayState.instance.startCountdown();
 			}
 			#end
 		});
