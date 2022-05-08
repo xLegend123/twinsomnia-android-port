@@ -1304,14 +1304,14 @@ class PlayState extends MusicBeatState
 	public function startVideo(name:String, ?isCutscene:Bool = true):Void {
 		var fileName:String = "assets/videos/" + name;
     
-		var bg:FlxSprite;
+/*		var bg:FlxSprite;
 		bg = new FlxSprite(-FlxG.width, -FlxG.height).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
 		bg.scrollFactor.set();
 		bg.cameras = [camHUD];
-		add(bg);
+*/		add(bg);
 
 		(new FlxVideo(fileName)).finishCallback = function() {
-			remove(bg);
+//			remove(bg);
 			startAndEnd();
 		}
 		if (isCutscene)
