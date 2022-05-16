@@ -131,6 +131,11 @@ class Paths
 
 	inline static public function lua(key:String, ?library:String)
 	{
+		return Main.path + getPath('$key.lua', TEXT, library);
+	}
+
+	inline static public function luaAsset(key:String, ?library:String)
+	{
 		return getPath('$key.lua', TEXT, library);
 	}
 
@@ -272,13 +277,7 @@ class Paths
 	}
 
 	inline static public function fileExists(key:String, type:AssetType, ?ignoreMods:Bool = false, ?library:String)
-	{
-		#if MODS_ALLOWED
-		if(FileSystem.exists(mods(currentModDirectory + '/' + key)) || FileSystem.exists(mods(key))) {
-			return true;
-		}
-		#end
-		
+	{		
 		if(OpenFlAssets.exists(Paths.getPath(key, type))) {
 			return true;
 		}

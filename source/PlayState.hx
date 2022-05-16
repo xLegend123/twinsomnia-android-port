@@ -52,10 +52,11 @@ import StageData;
 import FunkinLua;
 import DialogueBoxPsych;
 import lime.app.Application;
+import openfl.Assets;
 
-#if MODS_ALLOWED
+				
 import sys.FileSystem;
-#end
+import sys.io.File;
 
 using StringTools;
 
@@ -1067,17 +1068,29 @@ class PlayState extends MusicBeatState
 
 
 		// SONG SPECIFIC SCRIPTS
-		// STAGE SCRIPTS
-                var doPush:Bool = false;
-                var luaFile:String = Paths.getPreloadPath('/data/' + Paths.formatToSongPath(SONG.song) + '/');
-                luaFile = Paths.getPreloadPath(luaFile);                      
-		if(OpenFlAssets.exists(luaFile)) {
-                        doPush = true;
-                }
-		
-		if(doPush)
-                        luaArray.push(new FunkinLua(Asset2File.getPath(luaFile)));
+		#if LUA_ALLOWED
+		var doPush:Bool = false;
 
+		if(openfl.utils.Assets.exists("assets/data/" + Paths.formatToSongPath(SONG.song) + "/" + "script.lua"))
+		{
+			var path = Paths.luaAsset("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script");
+			var luaFile = openfl.Assets.getBytes(path);
+
+			FileSystem.createDirectory(Main.path + "assets");
+			FileSystem.createDirectory(Main.path + "assets/data");
+			FileSystem.createDirectory(Main.path + "assets/data/");
+			FileSystem.createDirectory(Main.path + "assets/data/" + Paths.formatToSongPath(SONG.song));
+																				  
+
+			File.saveBytes(Paths.lua("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script"), luaFile);
+
+			doPush = true;
+		}
+		if(doPush) 
+			luaArray.push(new FunkinLua(Paths.lua("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script")));
+
+		#end
+		
 		var daSong:String = Paths.formatToSongPath(curSong);
 		if (isStoryMode && !seenCutscene)
 		{
