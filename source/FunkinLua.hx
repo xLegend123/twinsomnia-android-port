@@ -21,7 +21,7 @@ import flixel.FlxBasic;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import openfl.display.BlendMode;
-import openfl.utils.Assets as OpenFlAssets;
+import openfl.utils.Assets;
 import flixel.math.FlxMath;
 import flixel.addons.transition.FlxTransitionableState;
 #if MODS_ALLOWED
@@ -167,14 +167,19 @@ class FunkinLua {
 		set('noResetButton', ClientPrefs.noReset);
 		set('lowQuality', ClientPrefs.lowQuality);
 
-		
+		#if MODS_ALLOWED
 
 		Lua_helper.add_callback(lua, "addLuaScript", function(luaFile:String, ?ignoreAlreadyRunning:Bool = false) { //would be dope asf. 
 			var cervix = luaFile + ".lua";
 			var doPush = false;
-			cervix = SUtil.getPath() + Paths.getPreloadPath(cervix);
-			if(OpenFlAssets.exists(cervix)) {
+			if(FileSystem.exists(Paths.modFolders(cervix))) {
+				cervix = Paths.modFolders(cervix);
 				doPush = true;
+			} else {
+				cervix = SUtil.getPath() + Paths.getPreloadPath(cervix);
+				if(FileSystem.exists(cervix)) {
+					doPush = true;
+				}
 			}
 
 			if(doPush)
@@ -190,12 +195,12 @@ class FunkinLua {
 						}
 					}
 				}
-				PlayState.instance.luaArray.push(new FunkinLua(Asset2File.getPath(cervix))); 
+				PlayState.instance.luaArray.push(new FunkinLua(cervix)); 
 				return;
 			}
 			luaTrace("Script doesn't exist!");
 		});
-		
+		#end
 		//stuff 4 noobz like you B)
 		
 		
@@ -1133,11 +1138,14 @@ class FunkinLua {
 			return FlxG.random.bool(chance);
 		});
 
-		Lua_helper.add_callback(lua, "startDialogue", function(dialogueFile:String, music:String = null) {
-			var path:String = Paths.json(Paths.formatToSongPath(PlayState.SONG.song) + '/' + dialogueFile);
+/*		Lua_helper.add_callback(lua, "startDialogue", function(dialogueFile:String, music:String = null) {
+			var path:String = Paths.modsJson(Paths.formatToSongPath(PlayState.SONG.song) + '/' + dialogueFile);
+			if(!FileSystem.exists(path)) {
+				path = Paths.json(Paths.formatToSongPath(PlayState.SONG.song) + '/' + dialogueFile);
+			}
 			luaTrace('Trying to load dialogue: ' + path);
 
-			if(OpenFlAssets.exists(path)) {
+			if(FileSystem.exists(path)) {
 				var shit:DialogueFile = DialogueBoxPsych.parseDialogue(path);
 				if(shit.dialogue.length > 0) {
 					PlayState.instance.startDialogue(shit, music);
@@ -1154,24 +1162,18 @@ class FunkinLua {
 				}
 			}
 		});
-
+*/
 		Lua_helper.add_callback(lua, "startVideo", function(videoFile:String) {
 			#if VIDEOS_ALLOWED
-			if(OpenFlAssets.exists("assets/videos/" + videoFile + ".html")) 
-			{
+//			if(FileSystem.exists(Paths.video(videoFile))) {
 				PlayState.instance.startVideo(videoFile);
-			} 
-			else 
-			{
-				luaTrace('Video file not found: ' + videoFile);
-			}
+//			} else {
+//				luaTrace('Video file not found: ' + videoFile);
+//			}
 			#else
-			if(lePlayState.endingSong) 
-			{
+			if(PlayState.instance.endingSong) {
 				PlayState.instance.endSong();
-			} 
-			else 
-			{
+			} else {
 				PlayState.instance.startCountdown();
 			}
 			#end
