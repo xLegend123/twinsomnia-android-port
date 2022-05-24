@@ -1,17 +1,34 @@
-function onMoveCamera(focus)
-	if focus == 'boyfriend' then
-		-- called when the camera focus on boyfriend
-		if getPropertyFromObject('boyfriend', 'y') >= 450 then
-			doTweenX('scaleTweenX', 'boyfriend.scale', 1.5, 1, 'elasticInOut');
-			doTweenY('scaleTweenY', 'boyfriend.scale', 1.5, 1, 'elasticInOut');
-			doTweenY('bfTweenY', 'boyfriend', getPropertyFromObject('boyfriend', 'y') - 70, 1, 'elasticInOut');
-		end
-	elseif focus == 'dad' then
-		-- called when the camera focus on dad
-		if getPropertyFromObject('boyfriend', 'y') < 450 then
-			doTweenX('scaleTweenX', 'boyfriend.scale', 1, 1, 'elasticInOut');
-			doTweenY('scaleTweenY', 'boyfriend.scale', 1, 1, 'elasticInOut');
-			doTweenY('bfTweenY', 'boyfriend', getPropertyFromObject('boyfriend', 'y') + 70, 1, 'elasticInOut');
-		end
+-- Lua stuff
+function onCreate()
+	-- triggered when the lua file is started
+
+	-- create a lua sprite called "sexualintercourse"
+	makeAnimatedLuaSprite('sexualintercourse', 'characters/DADDY_DEAREST', -100, 100);
+	addAnimationByPrefix('sexualintercourse', 'first', 'Dad idle dance', 24, false);
+	objectPlayAnimation('sexualintercourse', 'first');
+	addLuaSprite('sexualintercourse', false); -- false = add behind characters, true = add over characters
+end
+
+-- Gameplay interactions
+function onBeatHit()
+	-- triggered 4 times per section
+	if curBeat % 2 == 0 then
+		objectPlayAnimation('sexualintercourse', 'first');
+	end
+end
+
+function onStepHit()
+	-- triggered 16 times per section
+	setProperty('sexualintercourse.scale.x', getProperty('sexualintercourse.scale.x') + 0.01);
+end
+
+function onCountdownTick(counter)
+	-- counter = 0 -> "Three"
+	-- counter = 1 -> "Two"
+	-- counter = 2 -> "One"
+	-- counter = 3 -> "Go!"
+	-- counter = 4 -> Nothing happens lol, tho it is triggered at the same time as onSongStart i think
+	if counter % 2 == 0 then
+		objectPlayAnimation('sexualintercourse', 'first');
 	end
 end
