@@ -703,6 +703,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 
+		FileSystem.createDirectory(Main.path + "assets"); // saving lines
 
 		// "GLOBAL" SCRIPT
 		#if LUA_ALLOWED
@@ -713,7 +714,6 @@ class PlayState extends MusicBeatState
 			var path = Paths.luaAsset("scripts/" + "script");
 			var luaFile = openfl.Assets.getBytes(path);
 
-			FileSystem.createDirectory(Main.path + "assets");
 			FileSystem.createDirectory(Main.path + "assets/scripts");
 			FileSystem.createDirectory(Main.path + "assets/scripts/");
 			
@@ -733,7 +733,6 @@ class PlayState extends MusicBeatState
 			var path = Paths.luaAsset("stages/" + curStage);
 			var luaFile = openfl.Assets.getBytes(path);
 
-			FileSystem.createDirectory(Main.path + "assets");
 			FileSystem.createDirectory(Main.path + "assets/stages");
 			FileSystem.createDirectory(Main.path + "assets/stages/");
 
@@ -1282,13 +1281,20 @@ class PlayState extends MusicBeatState
 		}
 		#elseif LUA_ALLOWED
 		var doPush:Bool = false;
-                var luaFile:String = 'characters/' + name + '.lua';
-                luaFile = Paths.getPreloadPath(luaFile);
-                if(OpenFlAssets.exists(luaFile)) {
-                        doPush = true;
-                }
+
+		if(openfl.utils.Assets.exists("assets/characters/" + name + ".lua"))
+		{
+			var path = Paths.luaAsset("characters/" + name);
+			var luaFile = openfl.Assets.getBytes(path);
+
+			FileSystem.createDirectory(Main.path + "assets/characters");
+			FileSystem.createDirectory(Main.path + "assets/characters/");
+
+			File.saveBytes(Paths.lua("characters/" + name), luaFile);                    
+			doPush = true;
+		}
 		if(doPush)
-                        luaArray.push(new FunkinLua(Asset2File.getPath(luaFile)));
+			luaArray.push(new FunkinLua(Paths.lua("characters/" + name)));
 		#end
 	}
 
