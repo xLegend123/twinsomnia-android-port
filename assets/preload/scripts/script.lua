@@ -1,6 +1,2 @@
-function opponentNoteHit()
-    health = getProperty('health')
-    if getProperty('health') > 0.5 then
-        setProperty('health', health- 0.002);
-    end
-end
+var sus = true
+// you can remplace this script with anything else
