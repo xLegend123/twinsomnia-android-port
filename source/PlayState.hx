@@ -1062,7 +1062,6 @@ class PlayState extends MusicBeatState
 			var path = Paths.luaAsset("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script");
 			var luaFile = openfl.Assets.getBytes(path);
 
-			FileSystem.createDirectory(Main.path + "assets");
 			FileSystem.createDirectory(Main.path + "assets/data");
 			FileSystem.createDirectory(Main.path + "assets/data/");
 			FileSystem.createDirectory(Main.path + "assets/data/" + Paths.formatToSongPath(SONG.song));
