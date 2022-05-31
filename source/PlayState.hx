@@ -1304,7 +1304,7 @@ class PlayState extends MusicBeatState
 
 		FileSystem.createDirectory(Main.path + "assets/videos");
 		FileSystem.createDirectory(Main.path + "assets/videos/");
-		SUtil.copyContent(Paths.video(name), Main.Path + Paths.video(name));
+		SUtil.copyContent(Paths.video(name), Main.path + Paths.video(name));
 
 		if(!foundFile) {
 			fileName = Paths.video(name);
