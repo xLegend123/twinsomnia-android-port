@@ -96,8 +96,6 @@ class PlayState extends MusicBeatState
 	public var gfMap:Map<String, Character> = new Map<String, Character>();
 	#end
 
-	private static var luaArray:Array<String> = ["", "2", "3", "4", "5"];
-
 	public var BF_X:Float = 770;
 	public var BF_Y:Float = 100;
 	public var DAD_X:Float = 100;
@@ -710,18 +708,18 @@ class PlayState extends MusicBeatState
 		// "GLOBAL" SCRIPT
 		#if LUA_ALLOWED
 		var doPush:Bool = false;
-		for (i in luaArray) {
-		if(openfl.utils.Assets.exists("assets/scripts/" + "script" + i + ".lua"))
+
+		if(openfl.utils.Assets.exists("assets/scripts/" + "script.lua"))
 		{
 			FileSystem.createDirectory(Main.path + "assets/scripts");
 			FileSystem.createDirectory(Main.path + "assets/scripts/");
 			
-			SUtil.copyContent(Paths.luaAsset("scripts/" + "script" + i), Paths.lua("scripts/" + "script" + i) );
+			SUtil.copyContent(Paths.luaAsset("scripts/" + "script"), Paths.lua("scripts/" + "script"));
 
 			doPush = true;
 		}
 		if(doPush)
-			luaArray.push(new FunkinLua(Paths.lua("scripts/" + "script" + i)));
+			luaArray.push(new FunkinLua(Paths.lua("scripts/" + "script")));
 		}
 		#end
 
@@ -1055,20 +1053,18 @@ class PlayState extends MusicBeatState
 		#if LUA_ALLOWED
 		var doPush:Bool = false;
 		
-		for (i in luaArray) {
-		if(openfl.utils.Assets.exists("assets/data/" + Paths.formatToSongPath(SONG.song) + "/" + "script" + i + ".lua"))
+		if(openfl.utils.Assets.exists("assets/data/" + Paths.formatToSongPath(SONG.song) + "/" + "script.lua"))
 		{
 			FileSystem.createDirectory(Main.path + "assets/data");
 			FileSystem.createDirectory(Main.path + "assets/data/");
 			FileSystem.createDirectory(Main.path + "assets/data/" + Paths.formatToSongPath(SONG.song));
 							  
-			SUtil.copyContent(Paths.luaAsset("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script" + i) , Paths.lua("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script" + i));
+			SUtil.copyContent(Paths.luaAsset("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script") , Paths.lua("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script"));
 
 			doPush = true;
 		}
 		if(doPush) 
-			luaArray.push(new FunkinLua(Paths.lua("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script" + i)));
-		}
+			luaArray.push(new FunkinLua(Paths.lua("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script")));
 		#end
 		
 		var daSong:String = Paths.formatToSongPath(curSong);
