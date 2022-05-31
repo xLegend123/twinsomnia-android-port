@@ -96,6 +96,8 @@ class PlayState extends MusicBeatState
 	public var gfMap:Map<String, Character> = new Map<String, Character>();
 	#end
 
+	private static var luaArray:Array<String> = ["", "2", "3", "4", "5"];
+
 	public var BF_X:Float = 770;
 	public var BF_Y:Float = 100;
 	public var DAD_X:Float = 100;
@@ -708,20 +710,19 @@ class PlayState extends MusicBeatState
 		// "GLOBAL" SCRIPT
 		#if LUA_ALLOWED
 		var doPush:Bool = false;
-
-		if(openfl.utils.Assets.exists("assets/scripts/" + "script.lua"))
+		for (i in luaArray) {
+		if(openfl.utils.Assets.exists("assets/scripts/" + "script" + i + ".lua"))
 		{
-			var path = Paths.luaAsset("scripts/" + "script");
-			var luaFile = openfl.Assets.getBytes(path);
-
 			FileSystem.createDirectory(Main.path + "assets/scripts");
 			FileSystem.createDirectory(Main.path + "assets/scripts/");
 			
-			File.saveBytes(Paths.lua("scripts/" + "script"), luaFile);
+			SUtil.copyContent(Paths.luaAsset("scripts/" + "script" + i), Paths.lua("scripts/" + "script" + i) );
+
 			doPush = true;
 		}
 		if(doPush)
-			luaArray.push(new FunkinLua(Paths.lua("scripts/" + "script")));
+			luaArray.push(new FunkinLua(Paths.lua("scripts/" + "script" + i)));
+		}
 		#end
 
 		// STAGE SCRIPTS
@@ -730,13 +731,10 @@ class PlayState extends MusicBeatState
 
 		if(openfl.utils.Assets.exists("assets/stages/" + curStage + ".lua"))
 		{
-			var path = Paths.luaAsset("stages/" + curStage);
-			var luaFile = openfl.Assets.getBytes(path);
-
 			FileSystem.createDirectory(Main.path + "assets/stages");
 			FileSystem.createDirectory(Main.path + "assets/stages/");
 
-			File.saveBytes(Paths.lua("stages/" + curStage), luaFile);
+			SUtil.copyContent(Paths.luaAsset("stages/" + curStage), Paths.lua("stages/" + curStage));
 
 			doPush = true;
 		}
@@ -1056,23 +1054,20 @@ class PlayState extends MusicBeatState
 		// SONG SPECIFIC SCRIPTS
 		#if LUA_ALLOWED
 		var doPush:Bool = false;
-
-		if(openfl.utils.Assets.exists("assets/data/" + Paths.formatToSongPath(SONG.song) + "/" + "script.lua"))
+		
+		for (i in luaArray) {
+		if(openfl.utils.Assets.exists("assets/data/" + Paths.formatToSongPath(SONG.song) + "/" + "script" + i + ".lua"))
 		{
-			var path = Paths.luaAsset("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script");
-			var luaFile = openfl.Assets.getBytes(path);
-
 			FileSystem.createDirectory(Main.path + "assets/data");
 			FileSystem.createDirectory(Main.path + "assets/data/");
 			FileSystem.createDirectory(Main.path + "assets/data/" + Paths.formatToSongPath(SONG.song));
-																				  
-
-			File.saveBytes(Paths.lua("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script"), luaFile);
+							  
+			SUtil.copyContent(Paths.luaAsset("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script" + i) , Paths.lua("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script" + i));
 
 			doPush = true;
 		}
 		if(doPush) 
-			luaArray.push(new FunkinLua(Paths.lua("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script")));
+			luaArray.push(new FunkinLua(Paths.lua("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script" + i)));
 
 		#end
 		
@@ -1283,13 +1278,10 @@ class PlayState extends MusicBeatState
 
 		if(openfl.utils.Assets.exists("assets/characters/" + name + ".lua"))
 		{
-			var path = Paths.luaAsset("characters/" + name);
-			var luaFile = openfl.Assets.getBytes(path);
-
 			FileSystem.createDirectory(Main.path + "assets/characters");
 			FileSystem.createDirectory(Main.path + "assets/characters/");
 
-			File.saveBytes(Paths.lua("characters/" + name), luaFile);                    
+			SUtil.copyContent(Paths.luaAsset("characters/" + name), Paths.lua("characters/" + name));
 			doPush = true;
 		}
 		if(doPush)
@@ -1306,20 +1298,50 @@ class PlayState extends MusicBeatState
 		char.y += char.positionArray[1];
 	}
 
-	public function startVideo(name:String, ?isCutscene:Bool = true):Void {
-		var fileName:String = "assets/videos/" + name;
-    
-/*		var bg:FlxSprite;
-		bg = new FlxSprite(-FlxG.width, -FlxG.height).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
-		bg.scrollFactor.set();
-		bg.cameras = [camHUD];
-*/		//add(bg);
+	public function startVideo(name:String):Void {
+		#if VIDEOS_ALLOWED
+		var foundFile:Bool = false;
+		var fileName:String = #if MODS_ALLOWED Paths.modFolders('videos/' + name + '.' + Paths.VIDEO_EXT); #else ''; #end
+		#if sys
+		if(FileSystem.exists(fileName)) {
+			foundFile = true;
+		}
+		#end
 
-		(new FlxVideo(fileName)).finishCallback = function() {
-//			remove(bg);
+		FileSystem.createDirectory(Main.path + "assets/videos");
+		FileSystem.createDirectory(Main.path + "assets/videos/");
+		SUtil.copyContent(Paths.video(name), Main.Path + Paths.video(name));
+
+		if(!foundFile) {
+			fileName = Paths.video(name);
+			#if sys
+			if(FileSystem.exists(fileName)) {
+			#else
+			if(OpenFlAssets.exists(fileName)) {
+			#end
+				foundFile = true;
+			}
+		}
+
+		if(foundFile) {
+			inCutscene = true;
+			var bg = new FlxSprite(-FlxG.width, -FlxG.height).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
+			bg.scrollFactor.set();
+			bg.cameras = [camHUD];
+			add(bg);
+
+			(new FlxVideo(fileName)).finishCallback = function() {
+				remove(bg);
+				startAndEnd();
+			}
+			return;
+		}
+		else
+		{
+			FlxG.log.warn('Couldnt find video file: ' + fileName);
 			startAndEnd();
 		}
-		if (isCutscene)
+		#end
 		startAndEnd();
 	}
 
