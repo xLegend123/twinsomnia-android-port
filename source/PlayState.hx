@@ -720,7 +720,6 @@ class PlayState extends MusicBeatState
 		}
 		if(doPush)
 			luaArray.push(new FunkinLua(Paths.lua("scripts/" + "script")));
-		}
 		#end
 
 		// STAGE SCRIPTS
@@ -738,7 +737,6 @@ class PlayState extends MusicBeatState
 		}
 		if(doPush)
 			luaArray.push(new FunkinLua(Paths.lua("stages/" + curStage)));
-
                 #end
 
 		if(!modchartSprites.exists('blammedLightsBlack')) { //Creates blammed light black fade in case you didn't make your own
