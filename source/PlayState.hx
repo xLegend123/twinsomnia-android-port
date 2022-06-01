@@ -1307,7 +1307,7 @@ class PlayState extends MusicBeatState
 	}
 
 	public function startVideo(name:String, ?isCutscene:Bool = true):Void {
-		var fileName:String = "assets/videos/" + name;
+		var fileName:String = "assets/videos/" + name + ".mp4";
     
 /*		var bg:FlxSprite;
 		bg = new FlxSprite(-FlxG.width, -FlxG.height).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
