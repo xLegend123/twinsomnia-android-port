@@ -17,6 +17,7 @@ class FlxVideo extends FlxBasic {
 	#if VIDEOS_ALLOWED
 	public var finishCallback:Void->Void = null;
 	
+	public static var androidPath:String = 'file:///android_asset/';
 
 	#if desktop
 	public static var vlcBitmap:VlcBitmap;
@@ -52,7 +53,7 @@ class FlxVideo extends FlxBasic {
 
 	        #elseif android
 
-                VideoView.playVideo(AndroidTools.getFileUrl(name));
+                VideoView.playVideo(androidPath + name);
                 VideoView.onCompletion = function(){
 		        if (finishCallback != null){
 			        finishCallback();
