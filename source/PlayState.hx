@@ -1026,8 +1026,8 @@ class PlayState extends MusicBeatState
 		add(botplayTxt);
 
         creditTxt = new FlxText(876, 648, 348);
-    creditTxt.text = "PORTED BY\nXLEGEND_123";
-    creditTxt.setFormat(Paths.font("vcr.ttf"), 30, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+    creditTxt.text = "Port By\nxLegend_123";
+    creditTxt.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
     creditTxt.scrollFactor.set();
     add(creditTxt);
 
